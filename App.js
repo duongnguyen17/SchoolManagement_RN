@@ -1,112 +1,151 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow strict-local
- */
-
 import React from 'react';
-import type {Node} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import Octicons from 'react-native-vector-icons/Octicons';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+import Classes from './screens/Classes';
+import Message from './screens/Message';
+import MoreOptions from './screens/MoreOptions';
+import Notification from './screens/Notification';
+import Schedule from './screens/Schedule';
+import Students from './screens/Students';
+import Subjects from './screens/Subjects';
+import Teachers from './screens/Teachers';
+import AddNotification from './screens/AddNotification';
+import UserInfor from './screens/UserInfor';
 
-const Section = ({children, title}): Node => {
-  const isDarkMode = useColorScheme() === 'dark';
+import {NavigationContainer} from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
+import {AnimatedTabBarNavigator} from 'react-native-animated-nav-tab-bar';
+const Tab = AnimatedTabBarNavigator();
+const MainStack = createStackNavigator();
+const OptionsStack = createStackNavigator();
+// const Options = () => {
+//   return (
+//     <OptionsStack.Navigator initialRouteName="MoreOptions">
+//       <OptionsStack.Screen
+//         name="MoreOptions"
+//         component={MoreOptions}
+//         options={{headerShown: false}}
+//       />
+//       <OptionsStack.Screen name="Teachers" component={Teachers} />
+//       <OptionsStack.Screen name="Students" component={Students} />
+//       <OptionsStack.Screen name="Classes" component={Classes} />
+//       <OptionsStack.Screen name="Subjects" component={Subjects} />
+//     </OptionsStack.Navigator>
+//   );
+// };
+const TabBar = () => {
   return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
+    <Tab.Navigator
+      tabBarOptions={{
+        activeTintColor: '#3399ff',
+        inactiveTintColor: '#222222',
+        activeBackgroundColor: '#e6e6e6',
+        tabStyle: {shadow: true, tabBarBackground: '#4d94ff'}, //không thấy có thay đổi gì
+        labelStyle: {
+          fontSize: 18,
+        },
+      }}>
+      <Tab.Screen
+        name="Schedule"
+        component={Schedule}
+        options={{
+          tabBarIcon: ({focused, color}) => (
+            <MaterialIcons
+              name="schedule"
+              size={focused ? 24 : 30}
+              color={focused ? color : '#222222'}
+              focused={focused}
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Notification"
+        component={Notification}
+        options={{
+          tabBarIcon: ({focused, color, size}) => (
+            <MaterialIcons
+              name="notifications-none"
+              size={focused ? 24 : 30}
+              color={focused ? color : '#222222'}
+              focused={focused}
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Message"
+        component={Message}
+        options={{
+          tabBarIcon: ({focused, color, size}) => (
+            <MaterialIcons
+              name="messenger-outline"
+              size={focused ? 24 : 30}
+              color={focused ? color : '#222222'}
+              focused={focused}
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="More"
+        component={MoreOptions}
+        options={{
+          tabBarIcon: ({focused, color, size}) => (
+            <Octicons
+              name="three-bars"
+              size={focused ? 24 : 30}
+              color={focused ? color : '#222222'}
+              focused={focused}
+            />
+          ),
+        }}
+      />
+    </Tab.Navigator>
   );
 };
 
-const App: () => Node = () => {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
+const App = () => {
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.js</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+    <NavigationContainer>
+      <MainStack.Navigator
+      // screenOptions={{
+      //   headerShown: false,
+      // }}
+      >
+        <MainStack.Screen
+          name="Main"
+          component={TabBar}
+          options={{headerShown: false}}
+        />
+        <MainStack.Screen name="Teachers" component={Teachers} />
+        <MainStack.Screen
+          name="Students"
+          component={Students}
+          options={({route}) => ({
+            title: route.params.name,
+          })}
+        />
+        {/* <MainStack.Screen
+          name="Classes"
+          component={Classes}
+          options={({route}) => ({
+            title: route.params.name,
+          })}
+        /> */}
+        <MainStack.Screen
+          name="UserInfor"
+          component={UserInfor}
+          options={({route}) => ({
+            title: route.params.name,
+          })}
+        />
+        <MainStack.Screen name="Add Notification" component={AddNotification} />
+        <MainStack.Screen name="Subjects" component={Subjects} />
+      </MainStack.Navigator>
+    </NavigationContainer>
   );
 };
-
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
 
 export default App;
